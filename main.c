@@ -7,6 +7,7 @@
 #include "oct.h"
 #include "bin.h"
 #include "dec.h"
+#include <ctype.h>
 
 int main()
 {
@@ -228,7 +229,91 @@ int main()
         return 0;
     }
     if (str[0] == '~')
-    {
+    {   
+        int f = 0;
+        char * src3;
+        int a = 10;
+        if (str[1] == '0' && str[2] == 'x')
+        {
+            for (int i = 3; i < strlen(str); i++)
+            {
+                if ((str[i] < 48 || str[i] > 57) && (tolower(str[i]) < 97 || tolower(str[i]) > 102))
+                {
+                    f = 1;
+                    break;
+                }
+            }
+            if (f == 0)
+            {
+                strcpy(str, str + 1);
+                a = do_dec_hex(str);
+                a = ~a;
+                src3 = do_hex(a);
+                printf("0x%s (%d)\n", src3, a);
+                free(src3);
+                return 0;
+            }
+            return 0;
+        }
+        else if (str[1] == '0')
+        {
+            for (int i = 2; i < strlen(str); i++)
+            {
+                if (str[i] < 47 && str[i] > 55)
+                {
+                    f = 1;
+                    break;
+                }
+            }
+            if (f == 0)
+            {
+                strcpy(str, str + 1);
+                a = do_dec_oct(str);
+                a = ~a;
+                src3 = do_oct(a);
+                printf("0%s (%d)\n", src3, a);
+                free(src3);
+                return 0;
+            }
+            return 0;
+        }
+        for (int i = 1; i < strlen(str); i++)
+        {
+            if (str[i] != '0' && str[i] != '1')
+            {
+                f = 1;
+                break;
+            }
+        }
+        if (f == 0)
+        {
+            strcpy(str, str + 1);
+            a = do_dec_bin(str);
+            a = ~a;
+            src3 = do_bin(a);
+            printf("%s (%d)\n", src3, a);
+            free(src3);
+            return 0;
+        }
+        f = 0;
+        for (int i = 1; i < strlen(str); i++)
+        {
+            if (str[i] < 48 || str[i] > 57)
+            {
+                f = 1;
+                break;
+            }
+        }
+        if (f == 0)
+        {
+            strcpy(str, str + 1);
+            a = do_dec_dec(str);
+            a = ~a;
+            printf("%d\n", a);
+            return 0;
+        }
+        return 0;
+            
     }
     
 
